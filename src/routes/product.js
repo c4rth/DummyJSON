@@ -35,29 +35,46 @@ const {
  *      properties:
  *       id:
  *        type: number
+ *        example: 1
  *       title:
  *        type: string
+ *        example: "iPhone 9"
  *       description:
  *        type: string
+ *        example: "An apple mobile which is nothing like apple"
  *       price:
  *        type: number
+ *        example: 549
  *       discountPercentage:
  *        type: number
+ *        example: 12.96
  *       rating:
  *        type: number
+ *        example: 4.69
  *       stock:
  *        type: number
+ *        example: 94
  *       brand:
  *        type: string
+ *        example: "Apple"
  *       category:
  *        type: string
+ *        example: "smarphones"
  *       thumbnail:
  *        type: string
+ *        example: "https://i.dummyjson.com/data/products/1/thumbnail.jpg"
  *       images:
  *        type: array
  *        items:
  *         type:
  *          string
+ *        example: [
+ *                   "https://i.dummyjson.com/data/products/1/1.jpg",
+ *                   "https://i.dummyjson.com/data/products/1/2.jpg",
+ *                   "https://i.dummyjson.com/data/products/1/3.jpg",
+ *                   "https://i.dummyjson.com/data/products/1/4.jpg",
+ *                   "https://i.dummyjson.com/data/products/1/thumbnail.jpg"
+ *                 ]
  *     ProductDelete:
  *      allOf:
  *       - $ref: '#/components/schemas/Product'
@@ -65,29 +82,39 @@ const {
  *         properties:
  *          isDeleted:
  *           type: boolean
+ *           example: true
  *          deletedOn:
  *           type: string
+ *           example: "2023-11-02T08:12:00.000Z"
+ *           description: "ISO time"
  */
 
 /**
  * @swagger
  * /products:
  *  get:
- *   summary: get all products
+ *   summary: Get all products
  *   tags: [Product]
+ *   description: |
+ *     Limit and skip products:
+ *       - You can pass "limit" and "skip" params to limit and skip the results for pagination, and use limit=0 to get all items.
+ *       - You can pass "select" as query params with comma-separated values to select specific data.
  *   parameters:
  *    - in: query
  *      name: limit
+ *      example: 10
  *      schema:
  *       type: number
  *      required: false
  *    - in: query
  *      name: skip
+ *      example: 10
  *      schema:
  *       type: number
  *      required: false
  *    - in: query
  *      name: select
+ *      example: title,price
  *      schema:
  *       type: string
  *      required: false
@@ -110,27 +137,35 @@ router.get('/', (req, res) => {
  * @swagger
  * /products/search:
  *  get:
- *   summary: search products
+ *   summary: Search products
+ *   description: |
+ *     Limit and skip products:
+ *       - You can pass "limit" and "skip" params to limit and skip the results for pagination, and use limit=0 to get all items.
+ *       - You can pass "select" as query params with comma-separated values to select specific data.
  *   tags: [Product]
  *   parameters:
  *    - in: query
  *      name: q
- *      description: searchQuery
+ *      description: Search Query
+ *      example: phone
  *      schema:
  *       type: string
- *      required: false
+ *      required: true
  *    - in: query
  *      name: limit
+ *      example: 10
  *      schema:
  *       type: number
  *      required: false
  *    - in: query
  *      name: skip
+ *      example: 10
  *      schema:
  *       type: number
  *      required: false
  *    - in: query
  *      name: select
+ *      example: title,price
  *      schema:
  *       type: string
  *      required: false
@@ -153,7 +188,7 @@ router.get('/search', (req, res) => {
  * @swagger
  * /products/categories:
  *  get:
- *   summary: get all products categories
+ *   summary: Get all products categories
  *   tags: [Product]
  *   responses:
  *    200:
@@ -165,6 +200,28 @@ router.get('/search', (req, res) => {
  *        items:
  *         type:
  *          string
+ *        example: [
+ *                   "smartphones",
+ *                   "laptops",
+ *                   "fragrances",
+ *                   "skincare",
+ *                   "groceries",
+ *                   "home-decoration",
+ *                   "furniture",
+ *                   "tops",
+ *                   "womens-dresses",
+ *                   "womens-shoes",
+ *                   "mens-shirts",
+ *                   "mens-shoes",
+ *                   "mens-watches",
+ *                   "womens-watches",
+ *                   "womens-bags",
+ *                   "womens-jewellery",
+ *                   "sunglasses",
+ *                   "automotive",
+ *                   "motorcycle",
+ *                   "lighting"
+ *                 ]
  *    500:
  *     description: error
  */
@@ -177,16 +234,20 @@ router.get('/categories', (req, res) => {
  * @swagger
  * /products/{product_id}:
  *  get:
- *   summary: get product by id
+ *   summary: Get product by id
  *   tags: [Product]
+ *   description: |
+ *     - You can pass "select" as query params with comma-separated values to select specific data.
  *   parameters:
  *    - in: path
  *      name: product_id
+ *      example: 1
  *      schema:
  *       type: integer
  *      required: true
  *    - in: query
  *      name: select
+ *      example: title,price
  *      schema:
  *       type: string
  *      required: false
@@ -212,17 +273,21 @@ router.get('/:id', (req, res) => {
  * @swagger
  * /products/category/{category_name}:
  *  get:
- *   summary: get products of category
+ *   summary: Get products of category
  *   tags: [Product]
+ *   description: |
+ *     - You can pass "select" as query params with comma-separated values to select specific data.
  *   parameters:
  *    - in: query
  *      name: category_name
- *      description: categorName
+ *      description: Category name
+ *      example: smartphones
  *      schema:
  *       type: string
  *      required: true
  *    - in: query
  *      name: select
+ *      example: title,price
  *      schema:
  *       type: string
  *      required: false
@@ -245,9 +310,12 @@ router.get('/category/:categoryName', (req, res) => {
 
 /**
  * @swagger
- * /producs/add:
+ * /products/add:
  *  post:
- *   summary: create a new product
+ *   summary: Create a new product
+ *   description: |
+ *     - Adding a new product will not add it into the server.
+ *     - It will simulate a POST request and will return the new created product with a new id
  *   tags: [Product]
  *   requestBody:
  *    content:
@@ -271,13 +339,17 @@ router.post('/add', (req, res) => {
 
 /**
  * @swagger
- * /producs/{product_id}:
+ * /products/{product_id}:
  *  put:
- *   summary: update a product
+ *   summary: Update a product
+ *   description: |
+ *     - Updating a product will not update it into the server.
+ *     - It will simulate a PUT request and will return the product with modified data
  *   tags: [Product]
  *   parameters:
  *    - in: path
  *      name: product_id
+ *      example: 1
  *      schema:
  *       type: integer
  *      required: true
@@ -305,13 +377,17 @@ router.put('/:id', (req, res) => {
 
 /**
  * @swagger
- * /producs/{product_id}:
+ * /products/{product_id}:
  *  patch:
- *   summary: update a product
+ *   summary: Update a product
+ *   description: |
+ *     - Updating a product will not update it into the server.
+ *     - It will simulate a PACTH request and will return the product with modified data
  *   tags: [Product]
  *   parameters:
  *    - in: path
  *      name: product_id
+ *      example: 1
  *      schema:
  *       type: integer
  *      required: true
@@ -339,13 +415,17 @@ router.patch('/:id', (req, res) => {
 
 /**
  * @swagger
- * /producs/{product_id}:
+ * /products/{product_id}:
  *  delete:
- *   summary: delete a product
+ *   summary: Delete a product
+ *   description: |
+ *     - Deleting a product will not delete it into the server.
+ *     - It will simulate a DELETE request and will return deleted product with "isDeleted" & "deletedOn" keys
  *   tags: [Product]
  *   parameters:
  *    - in: path
  *      name: product_id
+ *      example: 1
  *      schema:
  *       type: integer
  *      required: true
